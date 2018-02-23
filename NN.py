@@ -1,10 +1,11 @@
-#Dependancies
+
+# import neccessary Dependancies/libs
 import numpy as np
 import pandas as pd
 from dataPrep import features, targets, features_test, targets_test
 import math
 
-#Perceptron class
+#Init Perceptron class
 class Perceptron():
 
     """
@@ -24,9 +25,10 @@ class Perceptron():
         self.Inputs = Inputs
         self.epochs = epochs
 
+
     def sigmoid(self,x):
         """
-        Sigmoid activation/step function. It takes in @param Inputs, as the value of n-dimensional first layer of the neural network. For its input, it computes the dot product of the @param valueOfFirstLayer and the weights plus the bias. It's output is a ratio in between 0 and 1.
+        Sigmoid activation/step function. It takes in @param Inputs, as the value of n-dimensional first layer of the neural network. For its input, it computes the dot product of the @param valueOfFirstLayer and the weights plus the bias. The output is a ratio in between 0 and 1 (float value).
         """
         #output = np.dot(self.weights,Inputs) + self.bias
         activatedOutput = (1 / (1 + np.exp(-x)))
@@ -34,7 +36,7 @@ class Perceptron():
 
     def prime_sigmoid(self, Inputs):
         """
-        fucntion to calculate the derivative of our sigmoid.
+        fucntion to calculate the derivative of our sigmoid of the inputs.
         """
         return self.sigmoid(Inputs) * ( 1 - self.sigmoid(Inputs))
 

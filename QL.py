@@ -1,37 +1,48 @@
 """
 Q-Learning example using OpenAI gym MountainCar enviornment
 """
-import numpy as np
 
+# import neccessary libs/modules
+import numpy as np
 import gym
 from gym import wrappers
 
+# define number of states which will be stored and the maxmimum iterations
 n_states = 40
 iter_max = 10000
 
+# define the initial learnrate, stop learnrate and etc.
 initial_lr = 1.0 # Learning rate
 min_lr = 0.003
 gamma = 1.0
 t_max = 10000
 eps = 0.02
 
+# main function which will take policy as input
 def run_episode(env, policy=None, render=False):
+    # init obs, which will store the values of state
     obs = env.reset()
     total_reward = 0
     step_index = 0
+    # run as much as max iterations
     for _ in range(t_max):
+        # if render is True, render all the process
         if render:
             env.render()
+        # if policy is empty/None, use the returned value from env.action_space.sample() as action
         if policy is None:
             action = env.action_space.sample()
         else:
+            # else as for policy, use the function obs_to_state
             a,b = obs_to_state(env, obs)
             action = policy[a][b]
+        # calculate the Q value
         obs, reward, done, _ = env.step(action)
         total_reward += gamma ** step_index * reward
         step_index += 1
         if done:
             break
+    # return the final value
     return total_reward
 
 def obs_to_state(env, obs):

@@ -1,3 +1,5 @@
+
+#import neccessary libs/modules
 import tensorflow as tf
 import numpy as np
 import random
@@ -5,13 +7,13 @@ import gym
 import math
 import matplotlib.pyplot as plt
 
-
+# def activation function of our policy gradient
 def softmax(x):
     e_x = np.exp(x - np.max(x))
     out = e_x / e_x.sum()
     return out
 
-
+# main policy gradient function
 def policy_gradient():
     with tf.variable_scope("policy"):
         params = tf.get_variable("policy_parameters",[4,2])
@@ -26,6 +28,7 @@ def policy_gradient():
         optimizer = tf.train.AdamOptimizer(0.01).minimize(loss)
         return probabilities, state, actions, advantages, optimizer
 
+# main value gradient function
 def value_gradient():
     with tf.variable_scope("value"):
         state = tf.placeholder("float",[None,4])
@@ -41,6 +44,7 @@ def value_gradient():
         optimizer = tf.train.AdamOptimizer(0.1).minimize(loss)
         return calculated, state, newvals, optimizer, loss
 
+# simulate the model
 def run_episode(env, policy_grad, value_grad, sess):
     pl_calculated, pl_state, pl_actions, pl_advantages, pl_optimizer = policy_grad
     vl_calculated, vl_state, vl_newvals, vl_optimizer, vl_loss = value_grad
@@ -52,7 +56,7 @@ def run_episode(env, policy_grad, value_grad, sess):
     transitions = []
     update_vals = []
 
-
+    # run for 200 epochs
     for _ in range(200):
         # calculate policy
         obs_vector = np.expand_dims(observation, axis=0)
@@ -101,15 +105,16 @@ def run_episode(env, policy_grad, value_grad, sess):
     return totalreward
 
 
+# the gym module used is CartPole
 env = gym.make('CartPole-v0')
-env.monitor.start('cartpole-hill/', force=True)
-policy_grad = policy_gradient()
-value_grad = value_gradient()
-sess = tf.InteractiveSession()
+env.monitor.start('cartpole-hill/', force=True) # monitor the process
+policy_grad = policy_gradient() # init the policy_grad
+value_grad = value_gradient() # init the value_grad
+sess = tf.InteractiveSession() # init the InteractiveSession
 sess.run(tf.initialize_all_variables())
-for i in range(2000):
-    reward = run_episode(env, policy_grad, value_grad, sess)
-    if reward == 200:
+for i in range(2000): # run the total model for 2000 times
+    reward = run_episode(env, policy_grad, value_grad, sess) # pass the policy_grad, value_grad for each trial
+    if reward == 200: # if the reward is reached, return the ith session
         print("reward 200")
         print(i)
         break
@@ -117,5 +122,5 @@ t = 0
 for _ in range(1000):
     reward = run_episode(env, policy_grad, value_grad, sess)
     t += reward
-print(t / 1000)
+print(t / 1000) # score of reward/trial amount
 env.monitor.close()

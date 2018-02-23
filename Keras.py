@@ -1,3 +1,6 @@
+#simple keras implementation
+
+#import neccessary libs and modules
 from keras.models import Sequential
 import numpy as np
 from keras.utils import np_utils
@@ -5,7 +8,7 @@ from keras import callbacks
 import tensorflow as tf
 from keras.layers.core import Dense, Activation
 
-#Visualization
+#Visualization on local network
 remote = callbacks.RemoteMonitor(root='http://localhost:9000')
 
 #Initialize tf with python_io
@@ -34,9 +37,9 @@ xor.summary()
 #Fitting the model
 history = xor.fit(X,y, epochs=100, verbose=1, callbacks=[remote])
 
-#Scoring the model
+#Score of the model
 score = xor.evaluate(X,y)
 print("\nThe accuracy socre is: ",score[-1])
 
-#Checking the predictions
+#Checking the accuracy of prediction
 print("\n Prediction for X is: ", xor.predict_proba(X))
